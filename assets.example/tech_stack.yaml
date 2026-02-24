@@ -1,0 +1,21 @@
+languages: []
+  # - Python
+  # - TypeScript
+  # - C
+  # - Bash
+
+infrastructure: []
+  # - Docker
+  # - Kubernetes
+  # - Terraform
+
+databases: []
+  # - PostgreSQL
+  # - SQLite
+
+platforms: []
+  # - macOS
+  # - Linux
+
+certifications: []
+  # - AWS Certified Solutions Architect

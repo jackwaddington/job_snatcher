@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-job_snatcher}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-job_snatcher_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-job_snatcher}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  ingester:
+    build:
+      context: .
+      dockerfile: infra/docker/python.Dockerfile
+    command: uvicorn src.ingester.main:app --host 0.0.0.0 --port 5001
+    ports:
+      - "5001:5001"
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  cosine-matcher:
+    build:
+      context: .
+      dockerfile: infra/docker/python.Dockerfile
+    command: uvicorn src.matchers.cosine.main:app --host 0.0.0.0 --port 5002
+    ports:
+      - "5002:5002"
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  reasoning-matcher:
+    build:
+      context: .
+      dockerfile: infra/docker/python.Dockerfile
+    command: uvicorn src.matchers.reasoning.main:app --host 0.0.0.0 --port 5003
+    ports:
+      - "5003:5003"
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  generator:
+    build:
+      context: .
+      dockerfile: infra/docker/python.Dockerfile
+    command: uvicorn src.generator.main:app --host 0.0.0.0 --port 5004
+    ports:
+      - "5004:5004"
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  curator:
+    build:
+      context: ./services/curator
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5005"
+    env_file: ./services/curator/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  airflow:
+    build:
+      context: .
+      dockerfile: infra/docker/airflow.Dockerfile
+    environment:
+      AIRFLOW__CORE__DAGS_FOLDER: /app/src/airflow_dags
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql://${POSTGRES_USER:-job_snatcher}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-job_snatcher_dev}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: airflow webserver
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:

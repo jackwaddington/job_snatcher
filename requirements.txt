@@ -1,0 +1,33 @@
+# Core dependencies
+airflow==2.7.3
+psycopg2-binary==2.9.9
+SQLAlchemy==2.0.23
+pydantic==2.5.0
+
+# Service framework (FastAPI + ASGI server)
+fastapi==0.104.0
+uvicorn==0.24.0
+
+# LLM & Embeddings
+sentence-transformers==2.2.2
+requests==2.31.0
+anthropic==0.7.1
+
+# Web scraping
+beautifulsoup4==4.12.2
+selenium==4.14.1
+lxml==4.9.3
+
+# Observability
+prometheus-client==0.18.0
+python-json-logger==2.0.7
+
+# Data & utilities
+pyyaml==6.0.1
+python-dotenv==1.0.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-asyncio==0.21.1
+pytest-mock==3.12.0

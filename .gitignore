@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+.env
+.env.local
+postgres_data/
+airflow_logs/
+metrics_data/
+assets/
+
+# Planning / drafting artifacts (not for public repo)
+job_snatcher_setup.md
+README_for_repo.md
+WHAT_WE_ADDED.md
+SERVICE_INGESTER.md
+
+# Airflow
+logs/
+dags/__pycache__/

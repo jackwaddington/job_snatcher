@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'ingester'
+    static_configs:
+      - targets: ['ingester:5001']
+    metrics_path: '/metrics'
+
+  - job_name: 'cosine-matcher'
+    static_configs:
+      - targets: ['cosine-matcher:5002']
+    metrics_path: '/metrics'
+
+  - job_name: 'reasoning-matcher'
+    static_configs:
+      - targets: ['reasoning-matcher:5003']
+    metrics_path: '/metrics'
+
+  - job_name: 'generator'
+    static_configs:
+      - targets: ['generator:5004']
+    metrics_path: '/metrics'
+
+  - job_name: 'curator'
+    static_configs:
+      - targets: ['curator:5005']
+    metrics_path: '/metrics'
