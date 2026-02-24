@@ -4,9 +4,9 @@ Automated job discovery, matching, and application pipeline.
 
 ## The Problem
 
-Job applications are a repetitive admin task. Find job, add to spreadsheet, research company, write cover letter, send — a lot of time for uncertain ROI.
+Job applications are a repetitive admin task. Find job, add to spreadsheet, research company, write cover letter, send — a lot of time for uncertain ROI and exposing ourselves to an emotional rollercoaster of hopes and dashed dreams.
 
-The thing is: we are not our cover letter. Professional experience lives in STAR stories and employment history. Passions live on GitHub. A good cover letter just holds these up to the mirror of the job posting.
+The thing is: we are not our cover letter. Professional experience lives in STAR stories and employment history. Passions can be expressed on GitHub. A good cover letter just holds these up to a mirror of the job posting.
 
 I've been doing this manually. This project automates it.
 
@@ -21,7 +21,7 @@ Job URL → Ingest → Cosine Match → LLM Reasoning → Combine Scores → Gen
 1. **Ingester** — fetches and parses job postings (Duunitori, LinkedIn, Indeed, generic)
 2. **Cosine Matcher** — semantic similarity between job description and your professional narrative (sentence-transformers)
 3. **Reasoning Matcher** — local LLM on gaming PC reasons about fit, explains why/why not
-4. **Generator** — Claude writes a cover letter and tailored CV summary using your actual STAR stories
+4. **Generator** — Claude writes a tailored CV and cover letter, reflecting STAR stories and GitHub
 5. **Curator** — you review drafts, approve or edit before anything gets sent
 
 Only high-scoring jobs reach the generator. Only approved drafts go anywhere.
